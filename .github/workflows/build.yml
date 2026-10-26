@@ -1,39 +1,45 @@
+
 name: Build VASILE DRIVE APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
+      - name: Download project
         uses: actions/checkout@v4
 
-      - name: Set up Java 8
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '8'
 
-      - name: Install Android SDK packages
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install legacy SDK
+      - name: Install SDK packages
         run: |
+          yes | sdkmanager --licenses || true
           sdkmanager "platforms;android-28" "build-tools;28.0.3"
-          yes | sdkmanager --licenses
 
       - name: Build APK
         run: |
-          wget -q https://services.gradle.org/distributions/gradle-4.6-bin.zip
-          unzip -q gradle-4.6-bin.zip
-          ./gradle-4.6/bin/gradle assembleDebug --no-daemon
+          chmod +x gradlew || true
+          if [ -f gradlew ]; then
+            ./gradlew assembleDebug
+          else
+            wget -q https://services.gradle.org/distributions/gradle-4.6-bin.zip
+            unzip -q gradle-4.6-bin.zip
+            gradle-4.6/bin/gradle assembleDebug
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: VASILE-DRIVE-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk
