@@ -27,9 +27,9 @@ jobs:
 
       - name: Build APK
         run: |
-          wget -q https://services.gradle.org/distributions/gradle-4.6-bin.zip
-          unzip -q gradle-4.6-bin.zip
-          gradle-4.6/bin/gradle --no-daemon assembleDebug
+          wget -q https://services.gradle.org/distributions/gradle-7.6.4-bin.zip
+          unzip -q gradle-7.6.4-bin.zip
+          gradle-7.6.4/bin/gradle --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
